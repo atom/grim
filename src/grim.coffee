@@ -5,4 +5,4 @@ exports.deprecate = (message) ->
     stackLines = e.stack.split("\n")
     method = stackLines[2].replace(/^\s*at\s*/, '')
 
-  console.log "#{method} is deprecated. #{message}", e.stack
+  console.warn "#{method} is deprecated. #{message}", e.stack
