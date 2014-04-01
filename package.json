@@ -1,6 +1,6 @@
 {
   "name": "grim",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Log usage of deprecated methods",
   "main": "./lib/grim",
   "scripts": {
@@ -20,8 +20,7 @@
       "url": "http://github.com/atom/grim/raw/master/LICENSE.md"
     }
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "coffee-script": "^1.7.0",
     "jasmine-focused": "^1.0.4",
