@@ -20,7 +20,9 @@
       "url": "http://github.com/atom/grim/raw/master/LICENSE.md"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "underscore-plus": "^1.0.0"
+  },
   "devDependencies": {
     "coffee-script": "^1.7.0",
     "jasmine-focused": "^1.0.4",
