@@ -1,31 +1,46 @@
-{deprecate} = require '../src/grim'
+grim = require '../src/grim'
 
 class Cow
   @moo: ->
-    deprecate("Use Cow.say() instead.")
+    grim.deprecate("Use Cow.say instead.")
 
   moo: ->
-    deprecate("Use Cow::say() instead.")
+    grim.deprecate("Use Cow::say instead.")
 
 describe "Grim", ->
-  beforeEach ->
-    spyOn(console, "warn")
+  afterEach ->
+    grim.clearLog()
 
   describe "a deprecated class method", ->
     it "logs a warning", ->
       Cow.moo()
-      args = console.warn.argsForCall[0]
-      expect(args[0]).toMatch(/^Function.Cow.moo \([^\)]+\) is deprecated. Use Cow.say\(\) instead./)
+
+      expect(Object.keys(grim.getLog())).toHaveLength(1)
+      logEntry = grim.getLog()['Function.Cow.moo']
+      expect(logEntry).toBeDefined()
+      expect(logEntry.message).toBe 'Use Cow.say instead.'
+      expect(logEntry.count).toBe 1
+      expect(logEntry.stackTraces).toHaveLength 1
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
       new Cow().moo()
-      args = console.warn.argsForCall[0]
-      expect(args[0]).toMatch(/^Cow.moo \([^\)]+\) is deprecated. Use Cow::say\(\) instead./)
+
+      expect(Object.keys(grim.getLog())).toHaveLength(1)
+      logEntry = grim.getLog()['Cow.moo']
+      expect(logEntry).toBeDefined()
+      expect(logEntry.message).toBe 'Use Cow::say instead.'
+      expect(logEntry.count).toBe 1
+      expect(logEntry.stackTraces).toHaveLength 1
 
   describe "a deprecated function", ->
     it "logs a warning", ->
-      suchFunction = -> deprecate("Use soWow() instead.")
+      suchFunction = -> grim.deprecate("Use soWow instead.")
       suchFunction()
-      args = console.warn.argsForCall[0]
-      expect(args[0]).toMatch(/^suchFunction \([^\)]+\) is deprecated. Use soWow\(\) instead./)
+
+      expect(Object.keys(grim.getLog())).toHaveLength(1)
+      logEntry = grim.getLog()['suchFunction']
+      expect(logEntry).toBeDefined()
+      expect(logEntry.message).toBe 'Use soWow instead.'
+      expect(logEntry.count).toBe 1
+      expect(logEntry.stackTraces).toHaveLength 1
