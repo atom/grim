@@ -1,18 +1,14 @@
 grim = require '../src/grim'
 
-class Cow
-  @moo: ->
-    grim.deprecate("Use Cow.say instead.")
-
-  moo: ->
-    grim.deprecate("Use Cow::say instead.")
-
 describe "Grim", ->
   afterEach ->
     grim.clearLog()
 
   describe "a deprecated class method", ->
     it "logs a warning", ->
+      class Cow
+        @moo: -> grim.deprecate("Use Cow.say instead.")
+
       Cow.moo()
 
       expect(Object.keys(grim.getLog())).toHaveLength(1)
@@ -24,6 +20,9 @@ describe "Grim", ->
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
+      class Cow
+        moo: -> grim.deprecate("Use Cow::say instead.")
+
       new Cow().moo()
 
       expect(Object.keys(grim.getLog())).toHaveLength(1)
