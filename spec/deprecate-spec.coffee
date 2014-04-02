@@ -43,3 +43,19 @@ describe "Grim", ->
       expect(logEntry.message).toBe 'Use soWow instead.'
       expect(logEntry.count).toBe 1
       expect(logEntry.stackTraces).toHaveLength 1
+
+  describe "when a deprecated function is called more than once", ->
+    it "increments the count and appends the new stack trace", ->
+      suchFunction = -> grim.deprecate("Use soWow instead.")
+
+      suchFunction()
+      expect(Object.keys(grim.getLog())).toHaveLength(1)
+      logEntry = grim.getLog()['suchFunction']
+      expect(logEntry.count).toBe 1
+      expect(logEntry.stackTraces).toHaveLength 1
+
+      suchFunction()
+      expect(Object.keys(grim.getLog())).toHaveLength(1)
+      logEntry = grim.getLog()['suchFunction']
+      expect(logEntry.count).toBe 2
+      expect(logEntry.stackTraces).toHaveLength 2
