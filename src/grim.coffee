@@ -9,6 +9,15 @@ module.exports =
   clearLog: ->
     log = {}
 
+  logDeprecationWarnings: ->
+    warnings = []
+    warnings.push [method, metadata] for method, metadata of log
+    warnings.sort (a, b) -> b[1].count - a[1].count
+
+    console.warn "\nCalls to deprecated functions\n-----------------------------"
+    for [method, metadata] in warnings
+      console.warn "(#{metadata.count}) #{method} : #{metadata.message}", metadata
+
   deprecate: (message) ->
     try
       throw new Error("Deprecated Method")
