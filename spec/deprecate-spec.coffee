@@ -59,3 +59,12 @@ describe "Grim", ->
       logEntry = grim.getLog()['suchFunction']
       expect(logEntry.count).toBe 2
       expect(logEntry.stackTraces).toHaveLength 2
+
+  it "calls console.warn when .logDeprecationWarnings is called", ->
+    spyOn(console, "warn")
+    suchFunction = -> grim.deprecate("Use soWow instead.")
+    suchFunction()
+
+    expect(console.warn).not.toHaveBeenCalled()
+    grim.logDeprecationWarnings()
+    expect(console.warn).toHaveBeenCalled()
