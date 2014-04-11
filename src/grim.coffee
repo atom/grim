@@ -1,17 +1,17 @@
 _ = require 'underscore-plus'
 
-log = {}
+global.__grimlog__ = {}
 
 module.exports =
   getLog: ->
-    _.clone(log)
+    global.__grimlog__
 
   clearLog: ->
-    log = {}
+    global.__grimlog__ = {}
 
   logDeprecationWarnings: ->
     warnings = []
-    warnings.push [method, metadata] for method, metadata of log
+    warnings.push [method, metadata] for method, metadata of @getLog()
     warnings.sort (a, b) -> b[1].count - a[1].count
 
     console.warn "\nCalls to deprecated functions\n-----------------------------"
@@ -25,6 +25,6 @@ module.exports =
       stackLines = e.stack.split("\n")
       [all, method] = stackLines[2].match(/^\s*at\s*(\S+)/)
 
-    log[method] ?= {message: message, count: 0, stackTraces: []}
-    log[method].count++
-    log[method].stackTraces.push e.stack
+    @getLog()[method] ?= {message: message, count: 0, stackTraces: []}
+    @getLog()[method].count++
+    @getLog()[method].stackTraces.push e.stack
