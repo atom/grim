@@ -1,4 +1,3 @@
-console.log "OK OK"
 _ = require 'underscore-plus'
 
 global.__grimlog__ = {}
@@ -26,8 +25,6 @@ grim =
       stackLines = e.stack.split("\n")
       [all, method] = stackLines[2].match(/^\s*at\s*(\S+)/)
 
-    console.log "THIS"
-    console.log grim
     grim.getLog()[method] ?= {message: message, count: 0, stackTraces: []}
     grim.getLog()[method].count++
     grim.getLog()[method].stackTraces.push e.stack
