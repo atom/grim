@@ -1,4 +1,5 @@
 _ = require 'underscore-plus'
+{Emitter} = require 'emissary'
 
 global.__grimlog__ = {}
 
@@ -29,4 +30,7 @@ grim =
     metadata.count++
     metadata.stackTraces.push e.stack
 
+    @emit("updated")
+
+Emitter.extend(grim)
 module.exports = grim

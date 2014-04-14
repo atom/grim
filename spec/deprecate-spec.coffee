@@ -68,3 +68,10 @@ describe "Grim", ->
     expect(console.warn).not.toHaveBeenCalled()
     grim.logDeprecationWarnings()
     expect(console.warn).toHaveBeenCalled()
+
+  it "emits the 'updated' event when a new deprecation error is logged", ->
+    updatedHandler = jasmine.createSpy("updated")
+    grim.on 'updated', updatedHandler
+    grim.deprecate("Something deprecated was called.")
+
+    expect(updatedHandler).toHaveBeenCalled()
