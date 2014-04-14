@@ -30,7 +30,7 @@ grim =
     metadata.count++
     metadata.stackTraces.push e.stack
 
-    @emit("updated")
+    grim.emit("updated")
 
 Emitter.extend(grim)
 module.exports = grim
