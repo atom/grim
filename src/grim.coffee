@@ -34,9 +34,9 @@ grim =
     method = originCallsite.getFunctionName()
     method = originCallsite.getTypeName() + "." + method if originCallsite.getTypeName() == "Function"
 
-    metadata = grim.getLog()[method] ?= {message: message, count: 0, stackTraces: []}
+    metadata = grim.getLog()[method] ?= {message: message, count: 0, stacks: []}
     metadata.count++
-    metadata.stackTraces.push stack
+    metadata.stacks.push stack
 
     grim.emit("updated")
 

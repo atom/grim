@@ -16,7 +16,7 @@ describe "Grim", ->
       expect(logEntry).toBeDefined()
       expect(logEntry.message).toBe 'Use Cow.say instead.'
       expect(logEntry.count).toBe 1
-      expect(logEntry.stackTraces.length).toBe 1
+      expect(logEntry.stacks.length).toBe 1
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
@@ -30,7 +30,7 @@ describe "Grim", ->
       expect(logEntry).toBeDefined()
       expect(logEntry.message).toBe 'Use Cow::say instead.'
       expect(logEntry.count).toBe 1
-      expect(logEntry.stackTraces.length).toBe 1
+      expect(logEntry.stacks.length).toBe 1
 
   describe "a deprecated function", ->
     it "logs a warning", ->
@@ -42,7 +42,7 @@ describe "Grim", ->
       expect(logEntry).toBeDefined()
       expect(logEntry.message).toBe 'Use soWow instead.'
       expect(logEntry.count).toBe 1
-      expect(logEntry.stackTraces.length).toBe 1
+      expect(logEntry.stacks.length).toBe 1
 
   describe "when a deprecated function is called more than once", ->
     it "increments the count and appends the new stack trace", ->
@@ -52,13 +52,13 @@ describe "Grim", ->
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
       expect(logEntry.count).toBe 1
-      expect(logEntry.stackTraces.length).toBe 1
+      expect(logEntry.stacks.length).toBe 1
 
       suchFunction()
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
       expect(logEntry.count).toBe 2
-      expect(logEntry.stackTraces.length).toBe 2
+      expect(logEntry.stacks.length).toBe 2
 
   it "calls console.warn when .logDeprecationWarnings is called", ->
     spyOn(console, "warn")
