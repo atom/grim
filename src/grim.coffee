@@ -20,15 +20,25 @@ grim =
       console.warn "(#{metadata.count}) #{method} : #{metadata.message}", metadata
 
   deprecate: (message) ->
+    originalPrepareStackTrace = Error.prepareStackTrace
+    Error.prepareStackTrace = (error, stack) -> stack
+
     try
       throw new Error("Deprecated Method")
     catch e
-      stackLines = e.stack.split("\n")
-      [all, method] = stackLines[2].match(/^\s*at\s*(\S+)/)
+
+    stack = e.stack # Forces Error.prepareStackTrace to be called https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
+    Error.prepareStackTrace = originalPrepareStackTrace
+
+    originCallsite = stack[1]
+    method = if originCallsite.getMethodName()?
+      originCallsite.getTypeName() + "." + originCallsite.getMethodName()
+    else
+      originCallsite.getTypeName() + "." + originCallsite.getFunctionName()
 
     metadata = grim.getLog()[method] ?= {message: message, count: 0, stackTraces: []}
     metadata.count++
-    metadata.stackTraces.push e.stack
+    metadata.stackTraces.push stack
 
     grim.emit("updated")
 
