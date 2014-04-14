@@ -31,10 +31,8 @@ grim =
     Error.prepareStackTrace = originalPrepareStackTrace
 
     originCallsite = stack[1]
-    method = if originCallsite.getMethodName()?
-      originCallsite.getTypeName() + "." + originCallsite.getMethodName()
-    else
-      originCallsite.getTypeName() + "." + originCallsite.getFunctionName()
+    method = originCallsite.getFunctionName()
+    method = originCallsite.getTypeName() + "." + method if originCallsite.getTypeName() == "Function"
 
     metadata = grim.getLog()[method] ?= {message: message, count: 0, stackTraces: []}
     metadata.count++
