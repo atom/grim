@@ -4,6 +4,21 @@ describe "Grim", ->
   afterEach ->
     grim.clearLog()
 
+  describe "a deprecated constructor method", ->
+    it "logs a warning", ->
+      class Cow
+        constructor: -> grim.deprecate("Use new Goat instead.")
+
+      new Cow()
+
+      expect(Object.keys(grim.getLog()).length).toBe(1)
+      logEntry = grim.getLog()['new Cow']
+      expect(logEntry).toBeDefined()
+      expect(logEntry.message).toBe 'Use new Goat instead.'
+      expect(logEntry.count).toBe 1
+      expect(logEntry.stacks.length).toBe 1
+
+
   describe "a deprecated class method", ->
     it "logs a warning", ->
       class Cow

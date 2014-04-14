@@ -30,9 +30,14 @@ grim =
     stack = e.stack # Forces Error.prepareStackTrace to be called https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
     Error.prepareStackTrace = originalPrepareStackTrace
 
-    originCallsite = stack[1]
-    method = originCallsite.getFunctionName()
-    method = originCallsite.getTypeName() + "." + method if originCallsite.getTypeName() == "Function"
+    callsite = stack[1]
+    if callsite.getTypeName() == "Window"
+      method = callsite.getFunctionName()
+    else
+      if callsite.isConstructor()
+        method = "new #{callsite.getFunctionName()}"
+      else
+        method = "#{callsite.getTypeName()}.#{callsite.getMethodName() or callsite.getFunctionName()}"
 
     metadata = grim.getLog()[method] ?= {message: message, count: 0, stacks: []}
     metadata.count++
