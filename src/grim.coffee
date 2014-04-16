@@ -22,15 +22,12 @@ grim =
   deprecate: (message) ->
     originalPrepareStackTrace = Error.prepareStackTrace
     Error.prepareStackTrace = (error, stack) -> stack
-
-    try
-      throw new Error("Deprecated Method")
-    catch e
-
-    stack = e.stack # Forces Error.prepareStackTrace to be called https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
+    error = new Error()
+    Error.captureStackTrace(error)
+    error.stack # Force prepare the stack https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
     Error.prepareStackTrace = originalPrepareStackTrace
 
-    callsite = stack[1]
+    callsite = error.stack[1]
     if callsite.getTypeName() == "Window"
       method = callsite.getFunctionName()
     else
@@ -41,7 +38,7 @@ grim =
 
     metadata = grim.getLog()[method] ?= {message: message, count: 0, stacks: []}
     metadata.count++
-    metadata.stacks.push stack
+    metadata.stacks.push error.stack
 
     grim.emit("updated")
 
