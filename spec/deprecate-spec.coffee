@@ -14,10 +14,9 @@ describe "Grim", ->
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['new Cow']
       expect(logEntry).toBeDefined()
-      expect(logEntry.message).toBe 'Use new Goat instead.'
-      expect(logEntry.count).toBe 1
-      expect(logEntry.stacks.length).toBe 1
-
+      expect(logEntry.getMessage()).toBe 'Use new Goat instead.'
+      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated class method", ->
     it "logs a warning", ->
@@ -29,9 +28,9 @@ describe "Grim", ->
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['Function.Cow.moo']
       expect(logEntry).toBeDefined()
-      expect(logEntry.message).toBe 'Use Cow.say instead.'
-      expect(logEntry.count).toBe 1
-      expect(logEntry.stacks.length).toBe 1
+      expect(logEntry.getMessage()).toBe 'Use Cow.say instead.'
+      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
@@ -43,9 +42,9 @@ describe "Grim", ->
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['Cow.moo']
       expect(logEntry).toBeDefined()
-      expect(logEntry.message).toBe 'Use Cow::say instead.'
-      expect(logEntry.count).toBe 1
-      expect(logEntry.stacks.length).toBe 1
+      expect(logEntry.getMessage()).toBe 'Use Cow::say instead.'
+      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated function", ->
     it "logs a warning", ->
@@ -55,9 +54,9 @@ describe "Grim", ->
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
       expect(logEntry).toBeDefined()
-      expect(logEntry.message).toBe 'Use soWow instead.'
-      expect(logEntry.count).toBe 1
-      expect(logEntry.stacks.length).toBe 1
+      expect(logEntry.getMessage()).toBe 'Use soWow instead.'
+      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getStacks().length).toBe 1
 
   describe "when a deprecated function is called more than once", ->
     it "increments the count and appends the new stack trace", ->
@@ -66,14 +65,14 @@ describe "Grim", ->
       suchFunction()
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
-      expect(logEntry.count).toBe 1
-      expect(logEntry.stacks.length).toBe 1
+      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getStacks().length).toBe 1
 
       suchFunction()
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
-      expect(logEntry.count).toBe 2
-      expect(logEntry.stacks.length).toBe 2
+      expect(logEntry.getCount()).toBe 2
+      expect(logEntry.getStacks().length).toBe 2
 
   it "calls console.warn when .logDeprecationWarnings is called", ->
     spyOn(console, "warn")

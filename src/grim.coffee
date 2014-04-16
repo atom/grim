@@ -1,5 +1,6 @@
 _ = require 'underscore-plus'
 {Emitter} = require 'emissary'
+Deprecation = require './deprecation'
 
 global.__grimlog__ = {}
 
@@ -11,35 +12,19 @@ grim =
     global.__grimlog__ = {}
 
   logDeprecationWarnings: ->
-    warnings = []
-    warnings.push [method, metadata] for method, metadata of grim.getLog()
-    warnings.sort (a, b) -> b[1].count - a[1].count
+    deprecations = []
+    deprecations.push(deprecation) for method, deprecation of grim.getLog()
+    deprecations.sort (a, b) -> b.getCount() - a.getCount()
 
     console.warn "\nCalls to deprecated functions\n-----------------------------"
-    for [method, metadata] in warnings
-      console.warn "(#{metadata.count}) #{method} : #{metadata.message}", metadata
+    for deprecation in deprecations
+      console.warn "(#{deprecation.getCount()}) #{deprecation.getMethodName()} : #{deprecation.getMessage()}", deprecation
 
   deprecate: (message) ->
-    originalPrepareStackTrace = Error.prepareStackTrace
-    Error.prepareStackTrace = (error, stack) -> stack
-    error = new Error()
-    Error.captureStackTrace(error)
-    error.stack # Force prepare the stack https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
-    Error.prepareStackTrace = originalPrepareStackTrace
-
-    callsite = error.stack[1]
-    if callsite.getTypeName() == "Window"
-      method = callsite.getFunctionName()
-    else
-      if callsite.isConstructor()
-        method = "new #{callsite.getFunctionName()}"
-      else
-        method = "#{callsite.getTypeName()}.#{callsite.getMethodName() or callsite.getFunctionName()}"
-
-    metadata = grim.getLog()[method] ?= {message: message, count: 0, stacks: []}
-    metadata.count++
-    metadata.stacks.push error.stack
-
+    stack = Deprecation.generateStack()
+    methodName = Deprecation.getMethodName(stack)
+    deprecation = grim.getLog()[methodName] ?= new Deprecation(message)
+    deprecation.addStack(stack)
     grim.emit("updated")
 
 Emitter.extend(grim)
