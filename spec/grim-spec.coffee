@@ -11,8 +11,8 @@ describe "Grim", ->
 
       new Cow()
 
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['new Cow']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use new Goat instead.'
       expect(logEntry.getCallCount()).toBe 1
@@ -25,8 +25,8 @@ describe "Grim", ->
 
       Cow.moo()
 
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['Function.Cow.moo']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use Cow.say instead.'
       expect(logEntry.getCallCount()).toBe 1
@@ -39,8 +39,8 @@ describe "Grim", ->
 
       new Cow().moo()
 
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['Cow.moo']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use Cow::say instead.'
       expect(logEntry.getCallCount()).toBe 1
@@ -51,8 +51,8 @@ describe "Grim", ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
       suchFunction()
 
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['suchFunction']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use soWow instead.'
       expect(logEntry.getCallCount()).toBe 1
@@ -63,14 +63,14 @@ describe "Grim", ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
 
       suchFunction()
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['suchFunction']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
       suchFunction()
-      expect(Object.keys(grim.getLog()).length).toBe(1)
-      logEntry = grim.getLog()['suchFunction']
+      expect(grim.getLog().length).toBe(1)
+      logEntry = grim.getLog()[0]
       expect(logEntry.getCallCount()).toBe 2
       expect(logEntry.getStacks().length).toBe 2
 
