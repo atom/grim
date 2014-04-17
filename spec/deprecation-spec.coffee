@@ -13,7 +13,7 @@ describe "Deprecation", ->
       expect(deprecation.getCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 2
 
-    fit "does not store equivalent stacks", ->
+    it "does not store equivalent stacks", ->
       stacks = []
       stacks.push(Deprecation.generateStack()) for i in [0..2]
 
