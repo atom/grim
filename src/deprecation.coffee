@@ -16,8 +16,10 @@ class Deprecation
     else
       if callsite.isConstructor()
         "new #{callsite.getFunctionName()}"
+      else if callsite.getMethodName() and not callsite.getFunctionName()
+        callsite.getMethodName()
       else
-        "#{callsite.getTypeName()}.#{callsite.getMethodName() or callsite.getFunctionName()}"
+        "#{callsite.getTypeName()}.#{callsite.getMethodName() ? callsite.getFunctionName() ? '<anonymous>'}"
 
   constructor: (@message) ->
     @callCount = 0
