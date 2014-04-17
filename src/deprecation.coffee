@@ -31,7 +31,7 @@ class Deprecation
   getLocationFromCallsite: (callsite) ->
     if callsite.isNative()
       "native"
-    if callsite.isEval()
+    else if callsite.isEval()
       "eval at #{@getLocationFromCallsite(callsite.getEvalOrigin())}"
     else
       "#{callsite.getFileName()}:#{callsite.getLineNumber()}:#{callsite.getColumnNumber()}"
