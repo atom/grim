@@ -2,7 +2,7 @@ grim = require '../src/grim'
 
 describe "Grim", ->
   afterEach ->
-    grim.clearLog()
+    grim.clearDeprecations()
 
   describe "a deprecated constructor method", ->
     it "logs a warning", ->
@@ -11,12 +11,12 @@ describe "Grim", ->
 
       new Cow()
 
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry).toBeDefined()
-      expect(logEntry.getMessage()).toBe 'Use new Goat instead.'
-      expect(logEntry.getCallCount()).toBe 1
-      expect(logEntry.getStacks().length).toBe 1
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation).toBeDefined()
+      expect(deprecation.getMessage()).toBe 'Use new Goat instead.'
+      expect(deprecation.getCallCount()).toBe 1
+      expect(deprecation.getStacks().length).toBe 1
 
   describe "a deprecated class method", ->
     it "logs a warning", ->
@@ -25,12 +25,12 @@ describe "Grim", ->
 
       Cow.moo()
 
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry).toBeDefined()
-      expect(logEntry.getMessage()).toBe 'Use Cow.say instead.'
-      expect(logEntry.getCallCount()).toBe 1
-      expect(logEntry.getStacks().length).toBe 1
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation).toBeDefined()
+      expect(deprecation.getMessage()).toBe 'Use Cow.say instead.'
+      expect(deprecation.getCallCount()).toBe 1
+      expect(deprecation.getStacks().length).toBe 1
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
@@ -39,48 +39,48 @@ describe "Grim", ->
 
       new Cow().moo()
 
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry).toBeDefined()
-      expect(logEntry.getMessage()).toBe 'Use Cow::say instead.'
-      expect(logEntry.getCallCount()).toBe 1
-      expect(logEntry.getStacks().length).toBe 1
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation).toBeDefined()
+      expect(deprecation.getMessage()).toBe 'Use Cow::say instead.'
+      expect(deprecation.getCallCount()).toBe 1
+      expect(deprecation.getStacks().length).toBe 1
 
   describe "a deprecated function", ->
     it "logs a warning", ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
       suchFunction()
 
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry).toBeDefined()
-      expect(logEntry.getMessage()).toBe 'Use soWow instead.'
-      expect(logEntry.getCallCount()).toBe 1
-      expect(logEntry.getStacks().length).toBe 1
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation).toBeDefined()
+      expect(deprecation.getMessage()).toBe 'Use soWow instead.'
+      expect(deprecation.getCallCount()).toBe 1
+      expect(deprecation.getStacks().length).toBe 1
 
   describe "when a deprecated function is called more than once", ->
     it "increments the count and appends the new stack trace", ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
 
       suchFunction()
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry.getCallCount()).toBe 1
-      expect(logEntry.getStacks().length).toBe 1
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation.getCallCount()).toBe 1
+      expect(deprecation.getStacks().length).toBe 1
 
       suchFunction()
-      expect(grim.getLog().length).toBe(1)
-      logEntry = grim.getLog()[0]
-      expect(logEntry.getCallCount()).toBe 2
-      expect(logEntry.getStacks().length).toBe 2
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation.getCallCount()).toBe 2
+      expect(deprecation.getStacks().length).toBe 2
 
-  it "calls console.warn when .logDeprecationWarnings is called", ->
+  it "calls console.warn when .logDeprecations is called", ->
     spyOn(console, "warn")
     suchFunction = -> grim.deprecate("Use soWow instead.")
     suchFunction()
 
     expect(console.warn).not.toHaveBeenCalled()
-    grim.logDeprecationWarnings()
+    grim.logDeprecations()
     expect(console.warn).toHaveBeenCalled()
 
   it "emits the 'updated' event when a new deprecation error is logged", ->
