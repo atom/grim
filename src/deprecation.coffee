@@ -1,3 +1,5 @@
+_ = require 'underscore'
+
 module.exports =
 class Deprecation
   @generateStack: ->
@@ -43,7 +45,7 @@ class Deprecation
     @message
 
   getStacks: ->
-    @stacks
+    _.clone(@stacks)
 
   getCallCount: ->
     @callCount
