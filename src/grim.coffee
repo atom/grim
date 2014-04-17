@@ -18,11 +18,11 @@ grim =
 
     console.warn "\nCalls to deprecated functions\n-----------------------------"
     for deprecation in deprecations
-      console.warn "(#{deprecation.getCount()}) #{deprecation.getMethodName()} : #{deprecation.getMessage()}", deprecation
+      console.warn "(#{deprecation.getCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
 
   deprecate: (message) ->
-    stack = Deprecation.generateStack()
-    methodName = Deprecation.getMethodNameFromCallsite(stack[0])
+    stack = Deprecation.generateStack()[1..] # Don't include the callsite for the grim.deprecate method
+    methodName = Deprecation.getFunctionNameFromCallsite(stack[0])
     deprecation = grim.getLog()[methodName] ?= new Deprecation(message)
     deprecation.addStack(stack)
     grim.emit("updated")

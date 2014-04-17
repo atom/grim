@@ -5,11 +5,12 @@ class Deprecation
     Error.prepareStackTrace = (error, stack) -> stack
     error = new Error()
     Error.captureStackTrace(error)
-    stack = error.stack[2..] # Force prepare the stack https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
+    # Force prepareStackTrace to be called https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
+    stack = error.stack[1..] # Don't include the callsite for this method
     Error.prepareStackTrace = originalPrepareStackTrace
     stack
 
-  @getMethodNameFromCallsite: (callsite) ->
+  @getFunctionNameFromCallsite: (callsite) ->
     if callsite.isToplevel()
       callsite.getFunctionName()
     else
@@ -22,8 +23,8 @@ class Deprecation
     @count = 0
     @stacks = []
 
-  getMethodNameFromCallsite: (callsite) ->
-    Deprecation.getMethodNameFromCallsite(callsite)
+  getFunctionNameFromCallsite: (callsite) ->
+    Deprecation.getFunctionNameFromCallsite(callsite)
 
   getLocationFromCallsite: (callsite) ->
     if callsite.isNative()
@@ -31,10 +32,10 @@ class Deprecation
     if callsite.isEval()
       "eval at #{@getLocationFromCallsite(callsite.getEvalOrigin())}"
     else
-      "#{callsite.getFileName()}:#{callsite.getLineNumber()}:#{callsite.getColumnNumber}"
+      "#{callsite.getFileName()}:#{callsite.getLineNumber()}:#{callsite.getColumnNumber()}"
 
-  getMethodName: ->
-    @methodName
+  getOriginName: ->
+    @originName
 
   getMessage: ->
     @message
@@ -46,14 +47,14 @@ class Deprecation
     @count
 
   addStack: (stack) ->
-    @methodName = @getMethodNameFromCallsite(stack[0]) unless @methodName?
+    @originName = @getFunctionNameFromCallsite(stack[0]) unless @originName?
     stack = @parseStack(stack)
     @stacks.push(stack) if @isStackUnique(stack)
     @count++
 
   parseStack: (stack) ->
     stack.map (callsite) =>
-      methodName: @getMethodNameFromCallsite(callsite)
+      methodName: @getFunctionNameFromCallsite(callsite)
       location: @getLocationFromCallsite(callsite)
       fileName: callsite.getFileName()
 
