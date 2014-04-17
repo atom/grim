@@ -62,7 +62,7 @@ class Deprecation
 
   parseStack: (stack) ->
     stack = stack.map (callsite) =>
-      methodName: @getFunctionNameFromCallsite(callsite)
+      functionName: @getFunctionNameFromCallsite(callsite)
       location: @getLocationFromCallsite(callsite)
       fileName: callsite.getFileName()
 
@@ -73,9 +73,9 @@ class Deprecation
     stacks = @stacks.filter (s) ->
       return false unless s.length is stack.length
 
-      for {methodName, location}, i in s
+      for {functionName, location}, i in s
         callsite = stack[i]
-        return false unless methodName == callsite.methodName and location == callsite.location
+        return false unless functionName == callsite.functionName and location == callsite.location
 
       true
 
