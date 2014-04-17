@@ -20,7 +20,7 @@ class Deprecation
         "#{callsite.getTypeName()}.#{callsite.getMethodName() or callsite.getFunctionName()}"
 
   constructor: (@message) ->
-    @count = 0
+    @callCount = 0
     @stacks = []
 
   getFunctionNameFromCallsite: (callsite) ->
@@ -43,20 +43,22 @@ class Deprecation
   getStacks: ->
     @stacks
 
-  getCount: ->
-    @count
+  getCallCount: ->
+    @callCount
 
   addStack: (stack) ->
     @originName = @getFunctionNameFromCallsite(stack[0]) unless @originName?
     stack = @parseStack(stack)
     @stacks.push(stack) if @isStackUnique(stack)
-    @count++
+    @callCount++
 
   parseStack: (stack) ->
-    stack.map (callsite) =>
+    stack = stack.map (callsite) =>
       methodName: @getFunctionNameFromCallsite(callsite)
       location: @getLocationFromCallsite(callsite)
       fileName: callsite.getFileName()
+
+    stack
 
   isStackUnique: (stack) ->
     stacks = @stacks.filter (s) ->
@@ -68,4 +70,4 @@ class Deprecation
 
       true
 
-    stacks.length == 0
+    stacks[0]

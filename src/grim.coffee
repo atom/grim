@@ -14,11 +14,11 @@ grim =
   logDeprecationWarnings: ->
     deprecations = []
     deprecations.push(deprecation) for method, deprecation of grim.getLog()
-    deprecations.sort (a, b) -> b.getCount() - a.getCount()
+    deprecations.sort (a, b) -> b.getCallCount() - a.getCallCount()
 
     console.warn "\nCalls to deprecated functions\n-----------------------------"
     for deprecation in deprecations
-      console.warn "(#{deprecation.getCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
+      console.warn "(#{deprecation.getCallCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
 
   deprecate: (message) ->
     stack = Deprecation.generateStack()[1..] # Don't include the callsite for the grim.deprecate method

@@ -15,7 +15,7 @@ describe "Grim", ->
       logEntry = grim.getLog()['new Cow']
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use new Goat instead.'
-      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated class method", ->
@@ -29,7 +29,7 @@ describe "Grim", ->
       logEntry = grim.getLog()['Function.Cow.moo']
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use Cow.say instead.'
-      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated class instance method", ->
@@ -43,7 +43,7 @@ describe "Grim", ->
       logEntry = grim.getLog()['Cow.moo']
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use Cow::say instead.'
-      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
   describe "a deprecated function", ->
@@ -55,7 +55,7 @@ describe "Grim", ->
       logEntry = grim.getLog()['suchFunction']
       expect(logEntry).toBeDefined()
       expect(logEntry.getMessage()).toBe 'Use soWow instead.'
-      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
   describe "when a deprecated function is called more than once", ->
@@ -65,13 +65,13 @@ describe "Grim", ->
       suchFunction()
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
-      expect(logEntry.getCount()).toBe 1
+      expect(logEntry.getCallCount()).toBe 1
       expect(logEntry.getStacks().length).toBe 1
 
       suchFunction()
       expect(Object.keys(grim.getLog()).length).toBe(1)
       logEntry = grim.getLog()['suchFunction']
-      expect(logEntry.getCount()).toBe 2
+      expect(logEntry.getCallCount()).toBe 2
       expect(logEntry.getStacks().length).toBe 2
 
   it "calls console.warn when .logDeprecationWarnings is called", ->

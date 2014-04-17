@@ -10,7 +10,7 @@ describe "Deprecation", ->
       deprecation.addStack(stackOne)
       deprecation.addStack(stackTwo)
 
-      expect(deprecation.getCount()).toBe 2
+      expect(deprecation.getCallCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 2
 
     it "does not store equivalent stacks", ->
@@ -21,5 +21,5 @@ describe "Deprecation", ->
       deprecation.addStack(stacks[0])
       deprecation.addStack(stacks[1])
 
-      expect(deprecation.getCount()).toBe 2
+      expect(deprecation.getCallCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 1
