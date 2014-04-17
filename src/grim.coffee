@@ -22,7 +22,7 @@ grim =
 
   deprecate: (message) ->
     stack = Deprecation.generateStack()
-    methodName = Deprecation.getMethodName(stack)
+    methodName = Deprecation.getMethodNameFromCallsite(stack[0])
     deprecation = grim.getLog()[methodName] ?= new Deprecation(message)
     deprecation.addStack(stack)
     grim.emit("updated")

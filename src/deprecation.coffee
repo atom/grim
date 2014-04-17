@@ -9,9 +9,8 @@ class Deprecation
     Error.prepareStackTrace = originalPrepareStackTrace
     stack
 
-  @getMethodName: (stack) ->
-    callsite = stack[0]
-    if callsite.getTypeName() == "Window"
+  @getMethodNameFromCallsite: (callsite) ->
+    if callsite.isToplevel()
       callsite.getFunctionName()
     else
       if callsite.isConstructor()
@@ -23,10 +22,16 @@ class Deprecation
     @count = 0
     @stacks = []
 
-  addStack: (stack) ->
-    @methodName = Deprecation.getMethodName(stack) unless @methodName?
-    @stacks.push(stack)
-    @count++
+  getMethodNameFromCallsite: (callsite) ->
+    Deprecation.getMethodNameFromCallsite(callsite)
+
+  getLocationFromCallsite: (callsite) ->
+    if callsite.isNative()
+      "native"
+    if callsite.isEval()
+      "eval at #{@getLocationFromCallsite(callsite.getEvalOrigin())}"
+    else
+      "#{callsite.getFileName()}:#{callsite.getLineNumber()}:#{callsite.getColumnNumber}"
 
   getMethodName: ->
     @methodName
@@ -39,3 +44,28 @@ class Deprecation
 
   getCount: ->
     @count
+
+  addStack: (stack) ->
+    @methodName = @getMethodNameFromCallsite(stack[0]) unless @methodName?
+    stack = @parseStack(stack)
+    console.log stack
+    @stacks.push(stack) if @isStackUnique(stack)
+    @count++
+
+  parseStack: (stack) ->
+    stack.map (callsite) =>
+      methodName: @getMethodNameFromCallsite(callsite)
+      location: @getLocationFromCallsite(callsite)
+      fileName: callsite.getFileName()
+
+  isStackUnique: (stack) ->
+    stacks = @stacks.filter (s) ->
+      return false unless s.length is stack.length
+
+      for {methodName, location}, i in s
+        callsite = stack[i]
+        return false unless methodName == callsite.methodName and location == callsite.location
+
+      true
+
+    stacks.length == 0
