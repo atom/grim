@@ -48,7 +48,6 @@ class Deprecation
   addStack: (stack) ->
     @methodName = @getMethodNameFromCallsite(stack[0]) unless @methodName?
     stack = @parseStack(stack)
-    console.log stack
     @stacks.push(stack) if @isStackUnique(stack)
     @count++
 
