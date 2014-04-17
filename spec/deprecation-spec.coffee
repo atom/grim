@@ -23,3 +23,4 @@ describe "Deprecation", ->
 
       expect(deprecation.getCallCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 1
+      expect(deprecation.getStacks()[0].callCount).toBe 2
