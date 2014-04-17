@@ -49,7 +49,11 @@ class Deprecation
   addStack: (stack) ->
     @originName = @getFunctionNameFromCallsite(stack[0]) unless @originName?
     stack = @parseStack(stack)
-    @stacks.push(stack) if @isStackUnique(stack)
+    if existingStack = @isStackUnique(stack)
+      existingStack.callCount++
+    else
+      @stacks.push(stack)
+
     @callCount++
 
   parseStack: (stack) ->
@@ -58,6 +62,7 @@ class Deprecation
       location: @getLocationFromCallsite(callsite)
       fileName: callsite.getFileName()
 
+    stack.callCount = 1
     stack
 
   isStackUnique: (stack) ->
