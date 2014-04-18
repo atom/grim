@@ -14,7 +14,7 @@ class Deprecation
 
   @getFunctionNameFromCallsite: (callsite) ->
     if callsite.isToplevel()
-      callsite.getFunctionName()
+      callsite.getFunctionName() ? '<unknown>'
     else
       if callsite.isConstructor()
         "new #{callsite.getFunctionName()}"
