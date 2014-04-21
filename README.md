@@ -1,3 +1,21 @@
 # Grim [![Build Status](https://travis-ci.org/atom/grim.svg)](https://travis-ci.org/atom/grim)
 
-Log usage of deprecated methods
+Log deprecate calls
+
+## Installing
+
+```sh
+npm install grim
+```
+
+## Usage
+
+```javascript
+Grim = require('Grim')
+
+function someOldMethod() {
+  Grim.deprecate("Use theNewMethod instead.")
+}
+```
+
+To view all calls to deprecated methods use `Grim.logDeprecations()`.
