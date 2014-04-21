@@ -18,4 +18,4 @@ function someOldMethod() {
 }
 ```
 
-To view all calls to deprecated methods use `Grim.logDeprecations()`.
+To view all calls to deprecated methods use `Grim.logDeprecations()` or get direct access to the deprecated calls by using `Grim.getDeprecations()`
