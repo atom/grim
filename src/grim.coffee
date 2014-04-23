@@ -22,7 +22,8 @@ grim =
   deprecate: (message) ->
     stack = Deprecation.generateStack()[1..] # Don't include the callsite for the grim.deprecate method
     methodName = Deprecation.getFunctionNameFromCallsite(stack[0])
-    unless deprecation = global.__grimDeprecations__.find((d) -> d.getOriginName() == methodName)
+    deprecations = global.__grimDeprecations__
+    unless deprecation = _.find(deprecations, (d) -> d.getOriginName() == methodName)
       deprecation = new Deprecation(message)
       global.__grimDeprecations__.push(deprecation)
     deprecation.addStack(stack)
