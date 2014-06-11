@@ -11,7 +11,7 @@ npm install grim
 ## Usage
 
 ```javascript
-Grim = require('Grim')
+Grim = require('grim')
 
 function someOldMethod() {
   Grim.deprecate("Use theNewMethod instead.")
