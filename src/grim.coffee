@@ -5,6 +5,9 @@ Deprecation = require './deprecation'
 global.__grimDeprecations__  = []
 
 grim =
+  maxDeprecationCallCount: ->
+    250
+
   getDeprecations: ->
     _.clone(global.__grimDeprecations__)
 
@@ -26,8 +29,10 @@ grim =
     unless deprecation = _.find(deprecations, (d) -> d.getOriginName() == methodName)
       deprecation = new Deprecation(message)
       global.__grimDeprecations__.push(deprecation)
-    deprecation.addStack(stack)
-    grim.emit("updated")
+
+    if deprecation.getCallCount() < grim.maxDeprecationCallCount()
+      deprecation.addStack(stack)
+      grim.emit("updated")
 
 Emitter.extend(grim)
 module.exports = grim
