@@ -2,17 +2,14 @@ _ = require 'underscore-plus'
 
 module.exports =
 class Deprecation
-  @generateStack: ->
-    originalPrepareStackTrace = Error.prepareStackTrace
-    Error.prepareStackTrace = (error, stack) -> stack
-    error = new Error()
-    Error.captureStackTrace(error)
-    # Force prepareStackTrace to be called https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
-    stack = error.stack[1..] # Don't include the callsite for this method
-    Error.prepareStackTrace = originalPrepareStackTrace
-    stack
-
   @getFunctionNameFromCallsite: (callsite) ->
+
+  constructor: (@message) ->
+    @callCount = 0
+    @stacks = {}
+    @stackCallCounts = {}
+
+  getFunctionNameFromCallsite: (callsite) ->
     if callsite.isToplevel()
       callsite.getFunctionName() ? '<unknown>'
     else
@@ -22,13 +19,6 @@ class Deprecation
         callsite.getMethodName()
       else
         "#{callsite.getTypeName()}.#{callsite.getMethodName() ? callsite.getFunctionName() ? '<anonymous>'}"
-
-  constructor: (@message) ->
-    @callCount = 0
-    @stacks = []
-
-  getFunctionNameFromCallsite: (callsite) ->
-    Deprecation.getFunctionNameFromCallsite(callsite)
 
   getLocationFromCallsite: (callsite) ->
     if callsite.isNative()
@@ -45,38 +35,27 @@ class Deprecation
     @message
 
   getStacks: ->
-    _.clone(@stacks)
+    parsedStacks = []
+    for location, stack of @stacks
+      parsedStack = @parseStack(stack)
+      parsedStack.callCount = @stackCallCounts[location]
+      parsedStacks.push(parsedStack)
+    parsedStacks
 
   getCallCount: ->
     @callCount
 
   addStack: (stack) ->
-    @originName = @getFunctionNameFromCallsite(stack[0]) unless @originName?
-    stack = @parseStack(stack)
-    if existingStack = @isStackUnique(stack)
-      existingStack.callCount++
-    else
-      @stacks.push(stack)
-
+    @originName ?= @getFunctionNameFromCallsite(stack[0])
     @callCount++
 
+    callerLocation = @getLocationFromCallsite(stack[1])
+    @stacks[callerLocation] ?= stack
+    @stackCallCounts[callerLocation] ?= 0
+    @stackCallCounts[callerLocation]++
+
   parseStack: (stack) ->
-    stack = stack.map (callsite) =>
+    stack.map (callsite) =>
       functionName: @getFunctionNameFromCallsite(callsite)
       location: @getLocationFromCallsite(callsite)
       fileName: callsite.getFileName()
-
-    stack.callCount = 1
-    stack
-
-  isStackUnique: (stack) ->
-    stacks = @stacks.filter (s) ->
-      return false unless s.length is stack.length
-
-      for {functionName, location}, i in s
-        callsite = stack[i]
-        return false unless functionName == callsite.functionName and location == callsite.location
-
-      true
-
-    stacks[0]

@@ -73,6 +73,18 @@ describe "Grim", ->
       deprecation = grim.getDeprecations()[0]
       expect(deprecation.getCallCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 2
+      expect(deprecation.getStacks()[0].callCount).toBe 1
+      expect(deprecation.getStacks()[1].callCount).toBe 1
+
+    it "does not store multiple stack traces for the same call site", ->
+      suchFunction = -> grim.deprecate("Use soWow instead.")
+      suchFunction() for i in [1..3]
+
+      expect(grim.getDeprecations().length).toBe(1)
+      deprecation = grim.getDeprecations()[0]
+      expect(deprecation.getCallCount()).toBe 3
+      expect(deprecation.getStacks().length).toBe 1
+      expect(deprecation.getStacks()[0].callCount).toBe 3
 
   it "calls console.warn when .logDeprecations is called", ->
     spyOn(console, "warn")

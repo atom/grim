@@ -4,22 +4,23 @@ Deprecation = require './deprecation'
 
 unless global.__grim__?
   grim = global.__grim__ =
-    grimDeprecations: []
-
-    maxDeprecationCallCount: ->
-      250
+    deprecations: {}
 
     getDeprecations: ->
-      _.clone(grim.grimDeprecations)
+      deprecations = []
+      for fileName, deprecationsByLineNumber of grim.deprecations
+        for lineNumber, deprecation of deprecationsByLineNumber
+          deprecations.push(deprecation)
+      deprecations
 
     getDeprecationsLength: ->
-      grim.grimDeprecations.length
+      @getDeprecations().length
 
     clearDeprecations: ->
-      grim.grimDeprecations = []
+      grim.deprecations = {}
 
     logDeprecations: ->
-      deprecations = grim.getDeprecations()
+      deprecations = @getDeprecations()
       deprecations.sort (a, b) -> b.getCallCount() - a.getCallCount()
 
       console.warn "\nCalls to deprecated functions\n-----------------------------"
@@ -27,16 +28,30 @@ unless global.__grim__?
         console.warn "(#{deprecation.getCallCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
 
     deprecate: (message) ->
-      stack = Deprecation.generateStack()[1..] # Don't include the callsite for the grim.deprecate method
-      methodName = Deprecation.getFunctionNameFromCallsite(stack[0])
-      deprecations = grim.grimDeprecations
-      unless deprecation = _.find(deprecations, (d) -> d.getOriginName() == methodName)
-        deprecation = new Deprecation(message)
-        grim.grimDeprecations.push(deprecation)
+      # Capture a 3-deep stack trace
+      originalStackTraceLimit = Error.stackTraceLimit
+      Error.stackTraceLimit = 3
+      error = new Error
+      Error.captureStackTrace(error)
+      Error.stackTraceLimit = originalStackTraceLimit
 
-      if deprecation.getCallCount() < grim.maxDeprecationCallCount()
-        deprecation.addStack(stack)
-        grim.emit("updated", deprecation)
+      # Get an array of v8 CallSite objects
+      originalPrepareStackTrace = Error.prepareStackTrace
+      Error.prepareStackTrace = (error, stack) -> stack
+      stack = error.stack[1..]
+      Error.prepareStackTrace = originalPrepareStackTrace
+
+      # Find or create a deprecation for this site
+      deprecationSite = stack[0]
+      fileName = deprecationSite.getFileName()
+      lineNumber = deprecationSite.getLineNumber()
+      grim.deprecations[fileName] ?= {}
+      grim.deprecations[fileName][lineNumber] ?= new Deprecation(message)
+      deprecation = grim.deprecations[fileName][lineNumber]
+
+      # Add the current stack trace to the deprecation
+      deprecation.addStack(stack)
+      grim.emit("updated", deprecation)
 
   Emitter.extend(grim)
 
