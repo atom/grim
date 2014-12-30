@@ -21,8 +21,9 @@
     }
   ],
   "dependencies": {
-    "underscore-plus": "^1.0.0",
-    "emissary": "^1.2.0"
+    "coffeestack": "^0.7.0",
+    "emissary": "^1.2.0",
+    "underscore-plus": "^1.0.0"
   },
   "devDependencies": {
     "coffee-script": "^1.7.0",

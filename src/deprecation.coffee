@@ -1,4 +1,7 @@
 _ = require 'underscore-plus'
+{convertLine} = require 'coffeestack'
+
+SourceMapCache = {}
 
 module.exports =
 class Deprecation
@@ -26,7 +29,15 @@ class Deprecation
     else if callsite.isEval()
       "eval at #{@getLocationFromCallsite(callsite.getEvalOrigin())}"
     else
-      "#{callsite.getFileName()}:#{callsite.getLineNumber()}:#{callsite.getColumnNumber()}"
+      fileName = callsite.getFileName()
+      line = callsite.getLineNumber()
+      column = callsite.getColumnNumber()
+
+      if /\.coffee$/.test(fileName)
+        if converted = convertLine(fileName, line, column, SourceMapCache)
+          {line, column} = converted
+
+      "#{fileName}:#{line}:#{column}"
 
   getOriginName: ->
     @originName

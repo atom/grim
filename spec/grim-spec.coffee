@@ -86,6 +86,13 @@ describe "Grim", ->
       expect(deprecation.getStacks().length).toBe 1
       expect(deprecation.getStacks()[0].callCount).toBe 3
 
+  it "converts locations in .coffee files using source maps", ->
+    require './fixtures/deprecation.coffee'
+    expect(grim.getDeprecations().length).toBe(1)
+    stack = grim.getDeprecations()[0].getStacks()[0]
+    expect(stack[0].location).toMatch /2:12$/
+    expect(stack[1].location).toMatch /3:0$/
+
   it "calls console.warn when .logDeprecations is called", ->
     spyOn(console, "warn")
     suchFunction = -> grim.deprecate("Use soWow instead.")
