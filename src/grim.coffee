@@ -8,7 +8,7 @@ unless global.__grim__?
 
     getDeprecations: ->
       deprecations = []
-      for fileName, deprecationsByLineNumber of @deprecations
+      for fileName, deprecationsByLineNumber of grim.deprecations
         for lineNumber, deprecation of deprecationsByLineNumber
           deprecations.push(deprecation)
       deprecations
@@ -17,7 +17,7 @@ unless global.__grim__?
       @getDeprecations().length
 
     clearDeprecations: ->
-      @deprecations = {}
+      grim.deprecations = {}
 
     logDeprecations: ->
       deprecations = @getDeprecations()
@@ -45,10 +45,9 @@ unless global.__grim__?
       deprecationSite = stack[0]
       fileName = deprecationSite.getFileName()
       lineNumber = deprecationSite.getLineNumber()
-      @deprecations ?= {}
-      @deprecations[fileName] ?= {}
-      @deprecations[fileName][lineNumber] ?= new Deprecation(message)
-      deprecation = @deprecations[fileName][lineNumber]
+      grim.deprecations[fileName] ?= {}
+      grim.deprecations[fileName][lineNumber] ?= new Deprecation(message)
+      deprecation = grim.deprecations[fileName][lineNumber]
 
       # Add the current stack trace to the deprecation
       deprecation.addStack(stack)
