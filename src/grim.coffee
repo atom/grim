@@ -27,7 +27,7 @@ unless global.__grim__?
       for deprecation in deprecations
         console.warn "(#{deprecation.getCallCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
 
-    deprecate: (message) ->
+    deprecate: (message, metadata) ->
       # Capture a 3-deep stack trace
       originalStackTraceLimit = Error.stackTraceLimit
       Error.stackTraceLimit = 3
@@ -50,7 +50,7 @@ unless global.__grim__?
       deprecation = grim.deprecations[fileName][lineNumber]
 
       # Add the current stack trace to the deprecation
-      deprecation.addStack(stack)
+      deprecation.addStack(stack, metadata)
       grim.emit("updated", deprecation)
 
   Emitter.extend(grim)

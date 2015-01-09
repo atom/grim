@@ -86,6 +86,18 @@ describe "Grim", ->
       expect(deprecation.getStacks().length).toBe 1
       expect(deprecation.getStacks()[0].callCount).toBe 3
 
+  describe "when metadata is provided as a second argument", ->
+    it "associates the metadata with the stack trace", ->
+      deprecatedFn = (metadata) -> grim.deprecate("It's deprecated.", metadata)
+
+      deprecatedFn(foo: "bar")
+      deprecatedFn(baz: "quux")
+
+      expect(grim.getDeprecations().length).toBe 1
+      [deprecation] = grim.getDeprecations()
+      expect(deprecation.getStacks()[0].metadata).toEqual {foo: "bar"}
+      expect(deprecation.getStacks()[1].metadata).toEqual {baz: "quux"}
+
   it "converts locations in .coffee files using source maps", ->
     require './fixtures/deprecation.coffee'
     expect(grim.getDeprecations().length).toBe(1)

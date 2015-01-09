@@ -50,16 +50,18 @@ class Deprecation
     for location, stack of @stacks
       parsedStack = @parseStack(stack)
       parsedStack.callCount = @stackCallCounts[location]
+      parsedStack.metadata = stack.metadata
       parsedStacks.push(parsedStack)
     parsedStacks
 
   getCallCount: ->
     @callCount
 
-  addStack: (stack) ->
+  addStack: (stack, metadata) ->
     @originName ?= @getFunctionNameFromCallsite(stack[0])
     @callCount++
 
+    stack.metadata = metadata
     callerLocation = @getLocationFromCallsite(stack[1])
     @stacks[callerLocation] ?= stack
     @stackCallCounts[callerLocation] ?= 0
