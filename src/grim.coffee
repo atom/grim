@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {Emitter} = require 'emissary'
 Deprecation = require './deprecation'
 

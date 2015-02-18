@@ -1,4 +1,3 @@
-_ = require 'underscore-plus'
 {convertLine} = require 'coffeestack'
 
 SourceMapCache = {}
