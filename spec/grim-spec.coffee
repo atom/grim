@@ -1,4 +1,5 @@
 grim = require '../src/grim'
+Deprecation = require '../src/deprecation'
 
 describe "Grim", ->
   afterEach ->
@@ -120,3 +121,39 @@ describe "Grim", ->
     grim.deprecate("Something deprecated was called.")
 
     expect(updatedHandler).toHaveBeenCalled()
+
+  it "supports JSON serializing/deserializing", ->
+    metadata = foo: 'bar'
+    grim.deprecate('no good', metadata)
+
+    [deprecation] = grim.getDeprecations()
+    expect(deprecation.getCallCount()).toBe 1
+    expect(grim.getDeprecationsLength()).toBe 1
+    expect(deprecation.getStacks().length).toBe 1
+    expect(deprecation.getStacks()[0].callCount).toBe 1
+
+    deserialized = Deprecation.deserialize(deprecation.serialize())
+    expect(deserialized.constructor).toBe deprecation.constructor
+    expect(deserialized.getMessage()).toBe deprecation.getMessage()
+    expect(deserialized.getOriginName()).toBe deprecation.getOriginName()
+    expect(deserialized.getCallCount()).toBe deprecation.getCallCount()
+    expect(deserialized.getStacks()).toEqual deprecation.getStacks()
+
+    grim.addSerializedDeprecation(deprecation.serialize())
+    expect(grim.getDeprecationsLength()).toBe 1
+    expect(deprecation.getCallCount()).toBe 2
+    expect(deprecation.getStacks().length).toBe 1
+    expect(deprecation.getStacks()[0].callCount).toBe 2
+
+    grim.clearDeprecations()
+    grim.addSerializedDeprecation(deprecation.serialize())
+    [deprecation] = grim.getDeprecations()
+    expect(grim.getDeprecationsLength()).toBe 1
+    expect(deprecation.getCallCount()).toBe 1
+    expect(deprecation.getStacks().length).toBe 1
+    expect(deprecation.getStacks()[0].callCount).toBe 1
+    expect(deserialized.constructor).toBe deprecation.constructor
+    expect(deserialized.getMessage()).toBe deprecation.getMessage()
+    expect(deserialized.getOriginName()).toBe deprecation.getOriginName()
+    expect(deserialized.getCallCount()).toBe deprecation.getCallCount()
+    expect(deserialized.getStacks()).toEqual deprecation.getStacks()

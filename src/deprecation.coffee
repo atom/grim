@@ -6,12 +6,19 @@ module.exports =
 class Deprecation
   @getFunctionNameFromCallsite: (callsite) ->
 
-  constructor: (@message) ->
+  @deserialize: ({message, fileName, lineNumber, stacks}) ->
+    deprecation = new Deprecation(message, fileName, lineNumber)
+    deprecation.addStack(stack, stack.metadata) for stack in stacks
+    deprecation
+
+  constructor: (@message, @fileName, @lineNumber) ->
     @callCount = 0
     @stacks = {}
     @stackCallCounts = {}
 
   getFunctionNameFromCallsite: (callsite) ->
+    return callsite.functionName if callsite.functionName?
+
     if callsite.isToplevel()
       callsite.getFunctionName() ? '<unknown>'
     else
@@ -23,6 +30,8 @@ class Deprecation
         "#{callsite.getTypeName()}.#{callsite.getMethodName() ? callsite.getFunctionName() ? '<anonymous>'}"
 
   getLocationFromCallsite: (callsite) ->
+    return callsite.location if callsite.location?
+
     if callsite.isNative()
       "native"
     else if callsite.isEval()
@@ -37,6 +46,9 @@ class Deprecation
           {line, column} = converted
 
       "#{fileName}:#{line}:#{column}"
+
+  getFileNameFromCallSite: (callsite) ->
+    callsite.fileName ? callsite.getFileName()
 
   getOriginName: ->
     @originName
@@ -58,6 +70,8 @@ class Deprecation
 
   addStack: (stack, metadata) ->
     @originName ?= @getFunctionNameFromCallsite(stack[0])
+    @fileName ?= @getFileNameFromCallSite(stack[0])
+    @lineNumber ?= stack[0].getLineNumber?()
     @callCount++
 
     stack.metadata = metadata
@@ -70,4 +84,10 @@ class Deprecation
     stack.map (callsite) =>
       functionName: @getFunctionNameFromCallsite(callsite)
       location: @getLocationFromCallsite(callsite)
-      fileName: callsite.getFileName()
+      fileName: @getFileNameFromCallSite(callsite)
+
+  serialize: ->
+    message: @getMessage()
+    lineNumber: @lineNumber
+    fileName: @fileName
+    stacks: @getStacks()

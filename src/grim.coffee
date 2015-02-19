@@ -17,6 +17,7 @@ unless global.__grim__?
 
     clearDeprecations: ->
       grim.deprecations = {}
+      return
 
     logDeprecations: ->
       deprecations = @getDeprecations()
@@ -25,6 +26,7 @@ unless global.__grim__?
       console.warn "\nCalls to deprecated functions\n-----------------------------"
       for deprecation in deprecations
         console.warn "(#{deprecation.getCallCount()}) #{deprecation.getOriginName()} : #{deprecation.getMessage()}", deprecation
+      return
 
     deprecate: (message, metadata) ->
       # Capture a 3-deep stack trace
@@ -51,6 +53,20 @@ unless global.__grim__?
       # Add the current stack trace to the deprecation
       deprecation.addStack(stack, metadata)
       grim.emit("updated", deprecation)
+      return
+
+    addSerializedDeprecation: (serializedDeprecation) ->
+      deprecation = Deprecation.deserialize(serializedDeprecation)
+      message = deprecation.getMessage()
+      {fileName, lineNumber} = deprecation
+      stacks = deprecation.getStacks()
+
+      grim.deprecations[fileName] ?= {}
+      grim.deprecations[fileName][lineNumber] ?= new Deprecation(message, fileName, lineNumber)
+      deprecation = grim.deprecations[fileName][lineNumber]
+      deprecation.addStack(stack, stack.metadata) for stack in stacks
+      grim.emit("updated", deprecation)
+      return
 
   Emitter.extend(grim)
 
