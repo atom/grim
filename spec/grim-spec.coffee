@@ -2,6 +2,9 @@ grim = require '../src/grim'
 Deprecation = require '../src/deprecation'
 
 describe "Grim", ->
+  beforeEach ->
+    expect(grim.includeDeprecatedAPIs).toBe true
+
   afterEach ->
     grim.clearDeprecations()
 

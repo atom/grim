@@ -5,6 +5,8 @@ unless global.__grim__?
   grim = global.__grim__ =
     deprecations: {}
 
+    includeDeprecatedAPIs: true
+
     getDeprecations: ->
       deprecations = []
       for fileName, deprecationsByLineNumber of grim.deprecations
