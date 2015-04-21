@@ -31,9 +31,9 @@ unless global.__grim__?
       return
 
     deprecate: (message, metadata) ->
-      # Capture a 3-deep stack trace
+      # Capture a 5-deep stack trace
       originalStackTraceLimit = Error.stackTraceLimit
-      Error.stackTraceLimit = 3
+      Error.stackTraceLimit = 5
       error = new Error
       Error.captureStackTrace(error)
       Error.stackTraceLimit = originalStackTraceLimit
