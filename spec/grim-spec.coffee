@@ -102,6 +102,18 @@ describe "Grim", ->
       expect(deprecation.getStacks()[0].metadata).toEqual {foo: "bar"}
       expect(deprecation.getStacks()[1].metadata).toEqual {baz: "quux"}
 
+    describe "when a packageName is defined", ->
+      it "uses the packageName when grouping deprecations with the same call stack", ->
+        deprecatedFn = (metadata) -> grim.deprecate("It's deprecated.", metadata)
+
+        deprecatedFn(packageName: "bar")
+        deprecatedFn(packageName: "quux")
+
+        expect(grim.getDeprecations().length).toBe 2
+        [deprecation1, deprecation2] = grim.getDeprecations()
+        expect(deprecation1.getStacks()[0].metadata).toEqual {packageName: "bar"}
+        expect(deprecation2.getStacks()[0].metadata).toEqual {packageName: "quux"}
+
   it "converts locations in .coffee files using source maps", ->
     require './fixtures/deprecation.coffee'
     expect(grim.getDeprecations().length).toBe(1)
