@@ -10,8 +10,9 @@ unless global.__grim__?
     getDeprecations: ->
       deprecations = []
       for fileName, deprecationsByLineNumber of grim.deprecations
-        for lineNumber, deprecation of deprecationsByLineNumber
-          deprecations.push(deprecation)
+        for lineNumber, deprecationsByPackage of deprecationsByLineNumber
+          for packageName, deprecation of deprecationsByPackage
+            deprecations.push(deprecation)
       deprecations
 
     getDeprecationsLength: ->
@@ -48,9 +49,12 @@ unless global.__grim__?
       deprecationSite = stack[0]
       fileName = deprecationSite.getFileName()
       lineNumber = deprecationSite.getLineNumber()
+      packageName = metadata?.packageName ? ""
       grim.deprecations[fileName] ?= {}
-      grim.deprecations[fileName][lineNumber] ?= new Deprecation(message)
-      deprecation = grim.deprecations[fileName][lineNumber]
+      grim.deprecations[fileName][lineNumber] ?= {}
+      grim.deprecations[fileName][lineNumber][packageName] ?= new Deprecation(message)
+
+      deprecation = grim.deprecations[fileName][lineNumber][packageName]
 
       # Add the current stack trace to the deprecation
       deprecation.addStack(stack, metadata)
@@ -62,10 +66,13 @@ unless global.__grim__?
       message = deprecation.getMessage()
       {fileName, lineNumber} = deprecation
       stacks = deprecation.getStacks()
+      packageName = metadata?.packageName ? ""
 
       grim.deprecations[fileName] ?= {}
-      grim.deprecations[fileName][lineNumber] ?= new Deprecation(message, fileName, lineNumber)
-      deprecation = grim.deprecations[fileName][lineNumber]
+      grim.deprecations[fileName][lineNumber] ?= {}
+      grim.deprecations[fileName][lineNumber][packageName] ?= new Deprecation(message, fileName, lineNumber)
+
+      deprecation = grim.deprecations[fileName][lineNumber][packageName]
       deprecation.addStack(stack, stack.metadata) for stack in stacks
       grim.emit("updated", deprecation)
       return
