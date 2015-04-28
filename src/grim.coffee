@@ -66,7 +66,7 @@ unless global.__grim__?
       message = deprecation.getMessage()
       {fileName, lineNumber} = deprecation
       stacks = deprecation.getStacks()
-      packageName = metadata?.packageName ? ""
+      packageName = stacks[0]?.metadata?.packageName ? ""
 
       grim.deprecations[fileName] ?= {}
       grim.deprecations[fileName][lineNumber] ?= {}
