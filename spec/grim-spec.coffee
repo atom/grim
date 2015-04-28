@@ -107,11 +107,23 @@ describe "Grim", ->
         deprecatedFn = (metadata) -> grim.deprecate("It's deprecated.", metadata)
 
         deprecatedFn(packageName: "bar")
+        deprecatedFn(packageName: "bar")
+        deprecatedFn(packageName: "quux")
         deprecatedFn(packageName: "quux")
 
         expect(grim.getDeprecations().length).toBe 2
         [deprecation1, deprecation2] = grim.getDeprecations()
+        expect(deprecation1.callCount).toBe 2
         expect(deprecation1.getStacks()[0].metadata).toEqual {packageName: "bar"}
+        expect(deprecation2.callCount).toBe 2
+        expect(deprecation2.getStacks()[0].metadata).toEqual {packageName: "quux"}
+
+        grim.addSerializedDeprecation(deprecation1.serialize())
+        expect(grim.getDeprecationsLength()).toBe 2
+        [deprecation1, deprecation2] = grim.getDeprecations()
+        expect(deprecation1.callCount).toBe 4
+        expect(deprecation1.getStacks()[0].metadata).toEqual {packageName: "bar"}
+        expect(deprecation2.callCount).toBe 2
         expect(deprecation2.getStacks()[0].metadata).toEqual {packageName: "quux"}
 
   it "converts locations in .coffee files using source maps", ->
