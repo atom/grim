@@ -21,6 +21,7 @@ describe "Grim", ->
       expect(deprecation.getMessage()).toBe 'Use new Goat instead.'
       expect(deprecation.getCallCount()).toBe 1
       expect(deprecation.getStacks().length).toBe 1
+      expect(deprecation.getStackCount()).toBe 1
 
   describe "a deprecated class method", ->
     it "logs a warning", ->
@@ -35,6 +36,7 @@ describe "Grim", ->
       expect(deprecation.getMessage()).toBe 'Use Cow.say instead.'
       expect(deprecation.getCallCount()).toBe 1
       expect(deprecation.getStacks().length).toBe 1
+      expect(deprecation.getStackCount()).toBe 1
 
   describe "a deprecated class instance method", ->
     it "logs a warning", ->
@@ -77,6 +79,7 @@ describe "Grim", ->
       deprecation = grim.getDeprecations()[0]
       expect(deprecation.getCallCount()).toBe 2
       expect(deprecation.getStacks().length).toBe 2
+      expect(deprecation.getStackCount()).toBe 2
       expect(deprecation.getStacks()[0].callCount).toBe 1
       expect(deprecation.getStacks()[1].callCount).toBe 1
 

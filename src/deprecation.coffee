@@ -13,6 +13,7 @@ class Deprecation
 
   constructor: (@message, @fileName, @lineNumber) ->
     @callCount = 0
+    @stackCount = 0
     @stacks = {}
     @stackCallCounts = {}
 
@@ -65,6 +66,9 @@ class Deprecation
       parsedStacks.push(parsedStack)
     parsedStacks
 
+  getStackCount: ->
+    @stackCount
+
   getCallCount: ->
     @callCount
 
@@ -76,7 +80,9 @@ class Deprecation
 
     stack.metadata = metadata
     callerLocation = @getLocationFromCallsite(stack[1])
-    @stacks[callerLocation] ?= stack
+    unless @stacks[callerLocation]?
+      @stacks[callerLocation] = stack
+      @stackCount++
     @stackCallCounts[callerLocation] ?= 0
     @stackCallCounts[callerLocation]++
 
