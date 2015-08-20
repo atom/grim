@@ -21,7 +21,6 @@
     }
   ],
   "dependencies": {
-    "coffeestack": "^1",
     "emissary": "^1.2.0"
   },
   "devDependencies": {

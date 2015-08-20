@@ -1,5 +1,3 @@
-{convertLine} = require 'coffeestack'
-
 SourceMapCache = {}
 
 module.exports =
@@ -41,11 +39,6 @@ class Deprecation
       fileName = callsite.getFileName()
       line = callsite.getLineNumber()
       column = callsite.getColumnNumber()
-
-      if /\.coffee$/.test(fileName)
-        if converted = convertLine(fileName, line, column, SourceMapCache)
-          {line, column} = converted
-
       "#{fileName}:#{line}:#{column}"
 
   getFileNameFromCallSite: (callsite) ->
