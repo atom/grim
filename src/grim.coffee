@@ -40,10 +40,8 @@ unless global.__grim__?
       Error.stackTraceLimit = originalStackTraceLimit
 
       # Get an array of v8 CallSite objects
-      originalPrepareStackTrace = Error.prepareStackTrace
-      Error.prepareStackTrace = (error, stack) -> stack
-      stack = error.stack[1..]
-      Error.prepareStackTrace = originalPrepareStackTrace
+      stack = error.getRawStack?() ? getRawStack(error)
+      stack = stack.slice(1)
 
       # Find or create a deprecation for this site
       deprecationSite = stack[0]
@@ -78,5 +76,12 @@ unless global.__grim__?
       return
 
   Emitter.extend(grim)
+
+getRawStack = (error) ->
+  originalPrepareStackTrace = Error.prepareStackTrace
+  Error.prepareStackTrace = (error, stack) -> stack
+  result = error.stack
+  Error.prepareStackTrace = originalPrepareStackTrace
+  result
 
 module.exports = global.__grim__
