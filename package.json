@@ -21,7 +21,7 @@
     }
   ],
   "dependencies": {
-    "emissary": "^1.2.0"
+    "event-kit": "^1.4.1"
   },
   "devDependencies": {
     "coffee-script": "^1.7.0",
