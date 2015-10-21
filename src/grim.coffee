@@ -1,10 +1,10 @@
-{Emitter} = require 'emissary'
 Deprecation = require './deprecation'
 
 unless global.__grim__?
+  {Emitter} = require 'event-kit'
   grim = global.__grim__ =
     deprecations: {}
-
+    emitter: new Emitter
     includeDeprecatedAPIs: true
 
     getDeprecations: ->
@@ -56,7 +56,7 @@ unless global.__grim__?
 
       # Add the current stack trace to the deprecation
       deprecation.addStack(stack, metadata)
-      grim.emit("updated", deprecation)
+      @emitter.emit("updated", deprecation)
       return
 
     addSerializedDeprecation: (serializedDeprecation) ->
@@ -72,10 +72,10 @@ unless global.__grim__?
 
       deprecation = grim.deprecations[fileName][lineNumber][packageName]
       deprecation.addStack(stack, stack.metadata) for stack in stacks
-      grim.emit("updated", deprecation)
+      @emitter.emit("updated", deprecation)
       return
 
-  Emitter.extend(grim)
+    on: (eventName, callback) -> @emitter.on(eventName, callback)
 
 getRawStack = (error) ->
   originalPrepareStackTrace = Error.prepareStackTrace
