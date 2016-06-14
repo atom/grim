@@ -1,4 +1,7 @@
-# Grim [![Build Status](https://travis-ci.org/atom/grim.svg)](https://travis-ci.org/atom/grim)
+# Grim
+[![OS X Build Status](https://travis-ci.org/atom/grim.svg)](https://travis-ci.org/atom/grim)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/i4m37pol77vygrvb/branch/master?svg=true)](https://ci.appveyor.com/project/Atom/grim/branch/master)
+[![Dependency Status](https://david-dm.org/atom/language-c.svg)](https://david-dm.org/atom/language-c)
 
 Log deprecate calls
 
