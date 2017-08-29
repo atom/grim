@@ -34,14 +34,14 @@ unless global.__grim__?
     deprecate: (message, metadata) ->
       # Capture a 5-deep stack trace
       originalStackTraceLimit = Error.stackTraceLimit
-      Error.stackTraceLimit = 7
-      error = new Error
-      Error.captureStackTrace(error)
-      Error.stackTraceLimit = originalStackTraceLimit
-
-      # Get an array of v8 CallSite objects
-      stack = error.getRawStack?() ? getRawStack(error)
-      stack = stack.slice(1)
+      try
+        Error.stackTraceLimit = 7
+        error = new Error
+        # Get an array of v8 CallSite objects
+        stack = error.getRawStack?() ? getRawStack(error)
+        stack = stack.slice(1)
+      finally
+        Error.stackTraceLimit = originalStackTraceLimit
 
       # Find or create a deprecation for this site
       deprecationSite = stack[0]
@@ -80,6 +80,7 @@ unless global.__grim__?
 getRawStack = (error) ->
   originalPrepareStackTrace = Error.prepareStackTrace
   Error.prepareStackTrace = (error, stack) -> stack
+  Error.captureStackTrace(error, getRawStack)
   result = error.stack
   Error.prepareStackTrace = originalPrepareStackTrace
   result
