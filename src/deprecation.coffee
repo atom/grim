@@ -29,6 +29,7 @@ class Deprecation
         "#{callsite.getTypeName()}.#{callsite.getMethodName() ? callsite.getFunctionName() ? '<anonymous>'}"
 
   getLocationFromCallsite: (callsite) ->
+    return "unknown" unless callsite?
     return callsite.location if callsite.location?
 
     if callsite.isNative()

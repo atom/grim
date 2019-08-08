@@ -64,6 +64,17 @@ describe "Grim", ->
       expect(deprecation.getCallCount()).toBe 1
       expect(deprecation.getStacks().length).toBe 1
 
+    it "gracefully handles async invocations", (done) ->
+      suchFunction = -> grim.deprecate("Use soWow instead.")
+      setTimeout( ->
+        suchFunction()
+
+        deprecation = grim.getDeprecations()[0]
+        expect(deprecation.getLocationFromCallsite()).toBe 'unknown'
+
+        done()
+      , 0)
+
   describe "when a deprecated function is called more than once", ->
     it "increments the count and appends the new stack trace", ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
