@@ -64,7 +64,7 @@ describe "Grim", ->
       expect(deprecation.getCallCount()).toBe 1
       expect(deprecation.getStacks().length).toBe 1
 
-    it "async callsite", (done) ->
+    it "gracefully handles async invocations", (done) ->
       suchFunction = -> grim.deprecate("Use soWow instead.")
       setTimeout( ->
         suchFunction()
