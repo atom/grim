@@ -56,7 +56,7 @@ unless global.__grim__?
 
       # Add the current stack trace to the deprecation
       deprecation.addStack(stack, metadata)
-      @emitter.emit("updated", deprecation)
+      grim.emitter.emit("updated", deprecation)
       return
 
     addSerializedDeprecation: (serializedDeprecation) ->
@@ -72,10 +72,10 @@ unless global.__grim__?
 
       deprecation = grim.deprecations[fileName][lineNumber][packageName]
       deprecation.addStack(stack, stack.metadata) for stack in stacks
-      @emitter.emit("updated", deprecation)
+      grim.emitter.emit("updated", deprecation)
       return
 
-    on: (eventName, callback) -> @emitter.on(eventName, callback)
+    on: (eventName, callback) -> grim.emitter.on(eventName, callback)
 
 getRawStack = (error) ->
   originalPrepareStackTrace = Error.prepareStackTrace
