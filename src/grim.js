@@ -1,15 +1,14 @@
 /*
  * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
  * DS104: Avoid inline assignments
- * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 import Deprecation from './deprecation';
 
+
 if (global.__grim__ == null) {
   const {Emitter} = require('event-kit');
-  var grim = (global.__grim__ = {
+  const grim = {
     deprecations: {},
     emitter: new Emitter,
     includeDeprecatedAPIs: true,
@@ -95,10 +94,11 @@ if (global.__grim__ == null) {
     },
 
     on(eventName, callback) { return grim.emitter.on(eventName, callback); }
-  });
+  };
+  global.__grim__ = grim;
 }
 
-var getRawStack = function(error) {
+function getRawStack(error) {
   const originalPrepareStackTrace = Error.prepareStackTrace;
   Error.prepareStackTrace = (error, stack) => stack;
   Error.captureStackTrace(error, getRawStack);
