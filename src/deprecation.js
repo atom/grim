@@ -5,11 +5,10 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-let Deprecation;
-const SourceMapCache = {};
+const SourceMapCache = {}
 
 module.exports =
-(Deprecation = class Deprecation {
+class Deprecation {
   static getFunctionNameFromCallsite(callsite) {}
 
   static deserialize({message, fileName, lineNumber, stacks}) {
@@ -128,4 +127,4 @@ module.exports =
       stacks: this.getStacks()
     };
   }
-});
+};
