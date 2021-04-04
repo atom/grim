@@ -5,7 +5,10 @@
   "main": "./lib/grim",
   "scripts": {
     "lint": "coffeelint .",
-    "test": "jasmine-node --coffee --captureExceptions --forceexit spec"
+    "test": "npm run build && jasmine-node --coffee --captureExceptions --forceexit spec",
+    "dev": "npm run build -- --watch",
+    "build": " babel src --out-dir lib --delete-dir-on-start",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,7 @@
     "event-kit": "^2.0.0"
   },
   "devDependencies": {
+    "babel-preset-atomic": "^4.1.0",
     "coffeelint": "^2.1.0",
     "jasmine-node": "^3.0.0",
     "temp": "^0.6.0"
