@@ -7,8 +7,7 @@
  */
 const SourceMapCache = {}
 
-module.exports =
-class Deprecation {
+export default class Deprecation {
   static getFunctionNameFromCallsite(callsite) {}
 
   static deserialize({message, fileName, lineNumber, stacks}) {

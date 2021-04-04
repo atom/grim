@@ -5,7 +5,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-const Deprecation = require('./deprecation');
+import Deprecation from './deprecation';
 
 if (global.__grim__ == null) {
   const {Emitter} = require('event-kit');
@@ -107,4 +107,4 @@ var getRawStack = function(error) {
   return result;
 };
 
-module.exports = global.__grim__;
+export default global.__grim__;
