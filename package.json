@@ -4,8 +4,11 @@
   "description": "Log usage of deprecated methods",
   "main": "./lib/grim",
   "scripts": {
-    "prepublish": "grunt clean lint coffee",
-    "test": "grunt test"
+    "lint": "coffeelint .",
+    "test": "npm run build && jasmine-node --coffee --captureExceptions --forceexit spec",
+    "dev": "npm run build -- --watch",
+    "build": " babel src --out-dir lib --delete-dir-on-start",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,15 +27,15 @@
     "event-kit": "^2.0.0"
   },
   "devDependencies": {
-    "coffee-script": "^1.7.0",
-    "jasmine-focused": "^1.0.4",
-    "grunt-contrib-coffee": "^0.9.0",
-    "grunt-cli": "^0.1.8",
-    "grunt": "^0.4.1",
-    "grunt-shell": "^0.2.2",
-    "grunt-coffeelint": "^0.0.6",
-    "rimraf": "^2.2.2",
-    "coffee-cache": "^0.2.0",
+    "babel-preset-atomic": "^4.1.0",
+    "coffeelint": "^2.1.0",
+    "jasmine-node": "^3.0.0",
     "temp": "^0.6.0"
+  },
+  "coffeelintConfig": {
+    "max_line_length": {
+      "level": "error",
+      "value": 120
+    }
   }
 }

@@ -1,5 +1,5 @@
-grim = require '../src/grim'
-Deprecation = require '../src/deprecation'
+grim = require '../lib/grim'
+Deprecation = require '../lib/deprecation'
 
 describe "Grim", ->
   beforeEach ->
