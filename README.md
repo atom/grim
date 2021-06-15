@@ -1,5 +1,6 @@
 # Grim
 [![CI](https://github.com/atom/grim/actions/workflows/ci.yml/badge.svg)](https://github.com/atom/grim/actions/workflows/ci.yml)
+
 Log deprecate calls
 
 ## Installing
